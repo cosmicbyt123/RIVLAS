@@ -18,9 +18,9 @@ class NavItem {
 const List<NavItem> kNavItems = [
   NavItem(icon: Icons.home_rounded, label: 'Home', index: 0),
   NavItem(icon: Icons.leaderboard_rounded, label: 'Ranks', index: 1),
-  NavItem(icon: Icons.add_rounded, label: '', index: 2, isCenter: true),
+  NavItem(icon: Icons.fitness_center_rounded, label: '', index: 2, isCenter: true),
   NavItem(icon: Icons.forum_rounded, label: 'Feed', index: 3),
-  NavItem(icon: Icons.person_rounded, label: 'Profile', index: 4),
+  NavItem(icon: Icons.sports_esports_rounded, label: 'Games', index: 4),
 ];
 
 class BottomNav extends StatelessWidget {
@@ -71,10 +71,10 @@ class BottomNav extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.add_rounded,
+                child: Icon(
+                  item.icon,
                   color: Colors.black,
-                  size: 30,
+                  size: 28,
                 ),
               ),
             );

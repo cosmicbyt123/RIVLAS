@@ -7,6 +7,7 @@ import 'video_verification_screen.dart';
 import 'challenge_battle_screen.dart';
 import 'prototype_competition_screen.dart';
 import 'game_mode_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -78,7 +79,10 @@ class HomeScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () => _showEditProfileDialog(context, state),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ProfileScreen()),
+          ),
           behavior: HitTestBehavior.opaque,
           child: Row(
             children: [
@@ -115,12 +119,12 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.edit_rounded, color: RivalsTheme.neonLime, size: 14),
+                      const Icon(Icons.verified_user_rounded, color: RivalsTheme.neonLime, size: 14),
                     ],
                   ),
                   const Text(
-                    'Overall',
-                    style: TextStyle(color: Colors.white54, fontSize: 12),
+                    'Tap to view Profile',
+                    style: TextStyle(color: RivalsTheme.neonLime, fontSize: 11, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -130,13 +134,16 @@ class HomeScreen extends StatelessWidget {
         Row(
           children: [
             _buildRoundIconBtn(
-              icon: Icons.edit_note_rounded,
-              onTap: () => _showEditProfileDialog(context, state),
+              icon: Icons.person_rounded,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
             ),
             const SizedBox(width: 8),
             _buildRoundIconBtn(
-              icon: Icons.notifications_none_rounded,
-              onTap: () {},
+              icon: Icons.edit_note_rounded,
+              onTap: () => _showEditProfileDialog(context, state),
             ),
           ],
         ),

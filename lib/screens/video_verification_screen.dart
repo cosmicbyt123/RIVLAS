@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import '../theme/rivals_theme.dart';
 import '../services/rivals_app_state.dart';
 import '../services/squat_tracker_service.dart';
+import '../services/pose_service.dart';
+import 'camera_screen.dart';
 
 class VideoVerificationScreen extends StatefulWidget {
   final String exerciseTitle;
@@ -36,6 +38,7 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
 
   late PoseDetector _poseDetector;
   final SquatTrackerService _squatTracker = SquatTrackerService();
+  final PoseService _poseService = PoseService()..mode = TrackingMode.selfieCamera;
 
   // Biomechanics & Telemetry State
   late AnimationController _animationController;
@@ -199,33 +202,77 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
             ? Size(image.height.toDouble(), image.width.toDouble())
             : Size(image.width.toDouble(), image.height.toDouble());
 
-        // Process real squat biomechanics
-        final squatResult = _squatTracker.processPose(pose);
+        if (_currentExercise == 'Push-Up') {
+          // Process real push-up biomechanics
+          final pushUpResult = _poseService.analyze(pose, rotatedSize);
 
-        if (squatResult.repJustCompleted) {
-          HapticFeedback.heavyImpact();
-          _flashGreen = true;
-          Future.delayed(const Duration(milliseconds: 400), () {
-            if (mounted) setState(() => _flashGreen = false);
+          if (pushUpResult.repJustCompleted) {
+            HapticFeedback.heavyImpact();
+            _flashGreen = true;
+            Future.delayed(const Duration(milliseconds: 400), () {
+              if (mounted) setState(() => _flashGreen = false);
+            });
+          }
+
+          setState(() {
+            _latestPose = pose;
+            _cameraImageSize = rotatedSize;
+            _repCount = pushUpResult.repCount;
+            _depth = pushUpResult.currentAngle;
+            _rom = (pushUpResult.formScore ?? 88);
+            _formScore = pushUpResult.formScore ?? 92;
+            _coachingFeedback = pushUpResult.feedback;
+            _isVerified = pushUpResult.isGoodForm;
+          });
+        } else {
+          // Process real squat biomechanics
+          final squatResult = _squatTracker.processPose(pose);
+
+          if (squatResult.repJustCompleted) {
+            HapticFeedback.heavyImpact();
+            _flashGreen = true;
+            Future.delayed(const Duration(milliseconds: 400), () {
+              if (mounted) setState(() => _flashGreen = false);
+            });
+          }
+
+          setState(() {
+            _latestPose = pose;
+            _cameraImageSize = rotatedSize;
+            _repCount = squatResult.repCount;
+            _depth = squatResult.kneeAngle;
+            _rom = squatResult.romPercentage;
+            _tempo = squatResult.tempoSeconds;
+            _formScore = squatResult.formScore;
+            _coachingFeedback = squatResult.feedback;
+            _isVerified = squatResult.isGoodForm;
           });
         }
-
-        setState(() {
-          _latestPose = pose;
-          _cameraImageSize = rotatedSize;
-          _repCount = squatResult.repCount;
-          _depth = squatResult.kneeAngle;
-          _rom = squatResult.romPercentage;
-          _tempo = squatResult.tempoSeconds;
-          _formScore = squatResult.formScore;
-          _coachingFeedback = squatResult.feedback;
-          _isVerified = squatResult.isGoodForm;
-        });
       }
     } catch (_) {
     } finally {
       _isDetecting = false;
     }
+  }
+
+  void _switchExercise(String exercise) {
+    if (_currentExercise == exercise) return;
+    HapticFeedback.mediumImpact();
+    if (exercise == 'Push-Up') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const CameraScreen()),
+      );
+      return;
+    }
+    _squatTracker.reset();
+    _poseService.reset();
+    setState(() {
+      _currentExercise = exercise;
+      _repCount = 0;
+      _depth = 175.0;
+      _coachingFeedback = 'Stand upright in camera frame. Squat below parallel.';
+    });
   }
 
   @override
@@ -243,7 +290,9 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
       _formScore = min(99, _formScore + 1);
       _flashGreen = true;
       _isVerified = true;
-      _coachingFeedback = 'Parallel Squat Verified! (86° depth)';
+      _coachingFeedback = _currentExercise == 'Push-Up'
+          ? 'Push-Up Rep Verified! (88° chest depth)'
+          : 'Parallel Squat Verified! (86° depth)';
     });
 
     HapticFeedback.mediumImpact();
@@ -385,17 +434,35 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
                         widget.isChallengeMode ? 'CHALLENGE VERIFICATION' : 'AI VIDEO VERIFICATION',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.1,
                         ),
                       ),
-                      Text(
-                        '$_currentExercise • Depth & Lockout',
-                        style: const TextStyle(
-                          color: RivalsTheme.neonLime,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.75),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white24),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildExercisePill(
+                              title: 'Squat',
+                              icon: Icons.fitness_center_rounded,
+                              isSelected: _currentExercise == 'Squat',
+                              onTap: () => _switchExercise('Squat'),
+                            ),
+                            _buildExercisePill(
+                              title: 'Push-Up',
+                              icon: Icons.bolt_rounded,
+                              isSelected: _currentExercise == 'Push-Up',
+                              onTap: () => _switchExercise('Push-Up'),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -626,8 +693,12 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
                       children: [
                         _buildTelemetryItem(
                           value: '${_depth.toInt()}°',
-                          label: _depth <= 95 ? 'Parallel Depth ✓' : 'Knee Angle',
-                          statusColor: _depth <= 95 ? RivalsTheme.neonLime : Colors.white,
+                          label: _currentExercise == 'Push-Up'
+                              ? (_depth <= 90 ? 'Chest Depth ✓' : 'Elbow Angle')
+                              : (_depth <= 95 ? 'Parallel Depth ✓' : 'Knee Angle'),
+                          statusColor: (_currentExercise == 'Push-Up' ? _depth <= 90 : _depth <= 95)
+                              ? RivalsTheme.neonLime
+                              : Colors.white,
                         ),
                         Container(width: 1, height: 28, color: Colors.white10),
                         _buildTelemetryItem(
@@ -714,6 +785,45 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
     );
   }
 
+  Widget _buildExercisePill({
+    required String title,
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? RivalsTheme.neonLime : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 13,
+              color: isSelected ? Colors.black : Colors.white60,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white60,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showInfoSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -722,19 +832,20 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) {
+        final isPushUp = _currentExercise == 'Push-Up';
         return Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.verified_rounded, color: RivalsTheme.neonLime, size: 24),
-                  SizedBox(width: 10),
+                  const Icon(Icons.verified_rounded, color: RivalsTheme.neonLime, size: 24),
+                  const SizedBox(width: 10),
                   Text(
-                    'AI Squat & Pose Biomechanics',
-                    style: TextStyle(
+                    isPushUp ? 'AI Push-Up Biomechanics' : 'AI Squat Biomechanics',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
@@ -743,14 +854,21 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
                 ],
               ),
               const SizedBox(height: 14),
-              const Text(
-                'How the AI validates your Squats:\n'
-                '• 3D Hip-Knee-Ankle Angle is measured every frame (30-60 FPS)\n'
-                '• Parallel Depth: Knee angle must reach 90° or lower (hip crease level with knee)\n'
-                '• Stand Up: Must fully extend hips and knees (>155°) to complete each rep\n'
-                '• Tempo: Controlled eccentric descent and explosive ascent\n\n'
-                'Place your phone 2-3 meters away with full body visible.',
-                style: TextStyle(color: Colors.white70, height: 1.4, fontSize: 13),
+              Text(
+                isPushUp
+                    ? 'How the AI validates your Push-Ups:\n'
+                      '• 3D Elbow-Shoulder Angle measured at 30-60 FPS\n'
+                      '• Chest Depth: Elbow flexion must reach 90° or lower\n'
+                      '• Full Lockout: Return to straight arms (>160°) in high plank\n'
+                      '• Rigid Spine: Hips must not sag or pike during reps\n\n'
+                      'Place your phone 1.5-2 meters away at a side profile view.'
+                    : 'How the AI validates your Squats:\n'
+                      '• 3D Hip-Knee-Ankle Angle is measured every frame (30-60 FPS)\n'
+                      '• Parallel Depth: Knee angle must reach 90° or lower (hip crease level with knee)\n'
+                      '• Stand Up: Must fully extend hips and knees (>155°) to complete each rep\n'
+                      '• Tempo: Controlled eccentric descent and explosive ascent\n\n'
+                      'Place your phone 2-3 meters away with full body visible.',
+                style: const TextStyle(color: Colors.white70, height: 1.4, fontSize: 13),
               ),
               const SizedBox(height: 20),
               GestureDetector(

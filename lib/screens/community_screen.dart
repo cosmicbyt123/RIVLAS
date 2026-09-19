@@ -42,7 +42,6 @@ class _CommunityScreenState extends State<CommunityScreen>
                   children: [
                     // Top App Bar
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
                           width: 40,
@@ -55,41 +54,44 @@ class _CommunityScreenState extends State<CommunityScreen>
                           child: const Icon(Icons.menu_rounded,
                               color: Colors.white, size: 20),
                         ),
+                        const SizedBox(width: 8),
                         // Segmented Switcher
-                        Container(
-                          height: 38,
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: RivalsTheme.surfaceElevated,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: RivalsTheme.borderLight),
-                          ),
-                          child: TabBar(
-                            controller: _tabController,
-                            isScrollable: true,
-                            tabAlignment: TabAlignment.center,
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            indicator: BoxDecoration(
-                              color: RivalsTheme.neonLime,
-                              borderRadius: BorderRadius.circular(16),
+                        Expanded(
+                          child: Container(
+                            height: 38,
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: RivalsTheme.surfaceElevated,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: RivalsTheme.borderLight),
                             ),
-                            labelColor: Colors.black,
-                            unselectedLabelColor: Colors.white70,
-                            labelStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
+                            child: TabBar(
+                              controller: _tabController,
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              indicator: BoxDecoration(
+                                color: RivalsTheme.neonLime,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              labelPadding: EdgeInsets.zero,
+                              labelColor: Colors.black,
+                              unselectedLabelColor: Colors.white70,
+                              labelStyle: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              unselectedLabelStyle: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              dividerColor: Colors.transparent,
+                              tabs: const [
+                                Tab(text: 'Gym Discovery'),
+                                Tab(text: 'Activity Feed'),
+                              ],
                             ),
-                            unselectedLabelStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            dividerColor: Colors.transparent,
-                            tabs: const [
-                              Tab(text: 'Gym Discovery'),
-                              Tab(text: 'Activity Feed'),
-                            ],
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           width: 40,
                           height: 40,

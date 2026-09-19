@@ -40,6 +40,7 @@ class _CameraScreenState extends State<CameraScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    _multiTracker.mode = TrackingMode.selfieCamera;
     _loadCamerasAndInit();
   }
 
