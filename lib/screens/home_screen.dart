@@ -29,9 +29,14 @@ class HomeScreen extends StatelessWidget {
                 // 1. Top User Bar
                 _buildTopUserBar(context, state),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 14),
 
-                // 2. Ready to compete? Header
+                // 2. RIVALS Pitch Deck Motto & Philosophy Banner
+                _buildRivalsMottoBanner(context),
+
+                const SizedBox(height: 18),
+
+                // 3. Ready to compete? Header
                 const Text(
                   'Ready to compete?',
                   style: TextStyle(
@@ -44,27 +49,32 @@ class HomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                // 3. Fitness Score Dial & Today's Workout Card
+                // 4. Fitness Score Dial & Today's Workout Card
                 _buildFitnessScoreCard(context, state),
 
                 const SizedBox(height: 20),
 
-                // 4. 4-Card Stats Grid (Streak, XP, Rank, Challenges)
+                // 5. 4-Card Stats Grid (Streak, XP, Rank, Challenges)
                 _buildStatsGrid(state),
 
                 const SizedBox(height: 18),
 
-                // 5. Friend PR Highlight Banner
+                // 6. RIVALS Manifesto: Why Conventional Fitness Apps Fail
+                _buildCompetitorTeardownCard(context),
+
+                const SizedBox(height: 18),
+
+                // 7. Friend PR Highlight Banner
                 _buildFriendPRBanner(context),
 
                 const SizedBox(height: 18),
 
-                // 6. Weekly Goal Progress Bar
+                // 8. Weekly Goal Progress Bar
                 _buildWeeklyGoalCard(state),
 
                 const SizedBox(height: 24),
 
-                // 7. Quick Arena Modes Carousel
+                // 9. Quick Arena Modes Carousel
                 _buildArenaModesCarousel(context),
               ],
             );
@@ -750,9 +760,557 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  /// Slogan & Brand Vision Banner from Rival.pdf
+  Widget _buildRivalsMottoBanner(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            RivalsTheme.neonLime.withValues(alpha: 0.14),
+            const Color(0xFF141914),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: RivalsTheme.neonLime.withValues(alpha: 0.35)),
+        boxShadow: [
+          BoxShadow(
+            color: RivalsTheme.neonLime.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: RivalsTheme.neonLime.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: RivalsTheme.neonLime.withValues(alpha: 0.5)),
+            ),
+            child: const Icon(Icons.fitness_center_rounded, color: RivalsTheme.neonLime, size: 22),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: RivalsTheme.neonLime.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: const Text(
+                        'THE HUB OF FITNESS',
+                        style: TextStyle(
+                          color: RivalsTheme.neonLime,
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Text(
+                      'AI-VERIFIED',
+                      style: TextStyle(color: Colors.white60, fontSize: 8.5, fontWeight: FontWeight.w800),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Every one day has a day one',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Text(
+                  'Grind Together • Grow Together',
+                  style: TextStyle(color: RivalsTheme.neonLime, fontSize: 11, fontWeight: FontWeight.w700),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _showRivalsManifestoModal(context),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: RivalsTheme.surfaceElevated,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white24),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.auto_awesome_rounded, color: RivalsTheme.neonLime, size: 14),
+                  SizedBox(width: 4),
+                  Text(
+                    'Vision',
+                    style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Competitor Teardown Card (Slide 8 & Slide 2 of Rival.pdf)
+  Widget _buildCompetitorTeardownCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: RivalsTheme.surfaceElevated,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: RivalsTheme.borderLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
+                    ),
+                    child: const Icon(Icons.flash_on_rounded, color: Colors.amber, size: 18),
+                  ),
+                  const SizedBox(width: 10),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'THE RIVALS REVOLUTION',
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                      Text(
+                        'Why Other Apps Fail',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () => _showRivalsManifestoModal(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: RivalsTheme.neonLime.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: RivalsTheme.neonLime.withValues(alpha: 0.4)),
+                  ),
+                  child: const Text(
+                    'Read PPT →',
+                    style: TextStyle(
+                      color: RivalsTheme.neonLime,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Conventional fitness apps track data but never create true motivation. Hollow streaks & badges don\'t care if you completed the workout. RIVALS brings verified social competition.',
+            style: TextStyle(color: Colors.white70, fontSize: 12.5, height: 1.45),
+          ),
+          const SizedBox(height: 14),
+          // 4 Competitor Tags
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildCompetitorMiniBadge('Cult.fit', 'Subscription Traps', Colors.deepOrangeAccent),
+              _buildCompetitorMiniBadge('Healthify', 'Calorie Burnout', Colors.tealAccent),
+              _buildCompetitorMiniBadge('Strava', 'Solo Running Loops', Colors.orangeAccent),
+              _buildCompetitorMiniBadge('Hevy', 'Repetitive Logging', Colors.lightBlueAccent),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompetitorMiniBadge(String name, String flaw, Color accent) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161C16),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            name,
+            style: TextStyle(color: accent, fontSize: 11, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '• $flaw',
+            style: const TextStyle(color: Colors.white54, fontSize: 10),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Full RIVALS Pitch Deck Manifesto Modal (Slides 1–9 from Rival.pdf)
+  void _showRivalsManifestoModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (_, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF101510),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border.all(color: RivalsTheme.neonLime.withValues(alpha: 0.3)),
+          ),
+          child: ListView(
+            controller: scrollController,
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+            children: [
+              Center(
+                child: Container(
+                  width: 42,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              // Header
+              Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: RivalsTheme.neonLime.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: RivalsTheme.neonLime),
+                    ),
+                    child: const Icon(Icons.bolt_rounded, color: RivalsTheme.neonLime, size: 28),
+                  ),
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'RIVALS PITCH DECK & VISION',
+                          style: TextStyle(
+                            color: RivalsTheme.neonLime,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'The Hub Of Fitness',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    icon: const Icon(Icons.close_rounded, color: Colors.white60),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Slogan Box
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      RivalsTheme.neonLime.withValues(alpha: 0.2),
+                      const Color(0xFF172017),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: RivalsTheme.neonLime.withValues(alpha: 0.4)),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '“Every one day has a day one”',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Grind Together • Grow Together',
+                      style: TextStyle(
+                        color: RivalsTheme.neonLime,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 22),
+
+              // Section 1: Problem Statement (Slide 2)
+              _buildManifestoSectionHeader('THE PROBLEM STATEMENT', Icons.error_outline_rounded, Colors.redAccent),
+              const SizedBox(height: 10),
+              _buildManifestoCard(
+                title: 'Conventional Fitness Apps Lack Real Motivation',
+                body: '• Most fitness apps just track numbers without creating motivation.\n'
+                    '• Generic workout and diet plans that treat every human like a robot.\n'
+                    '• Existing gamification is mostly empty streaks and badges—they never care if you completed the task or cheated.\n'
+                    '• Logging sets manually feels like an endless chore with no real accountability.',
+              ),
+              const SizedBox(height: 18),
+
+              // Section 2: Competitor Teardowns (Slide 8)
+              _buildManifestoSectionHeader('OUR RIVALS & THEIR FLAWS', Icons.compare_arrows_rounded, Colors.amber),
+              const SizedBox(height: 10),
+              _buildCompetitorQuoteCard('CULT.FIT', '“Come for fitness, stay for subscriptions, classes, and notifications.”', Colors.deepOrangeAccent),
+              const SizedBox(height: 8),
+              _buildCompetitorQuoteCard('HEALTHIFY', '“Count every calorie until you forget why you started.”', Colors.tealAccent),
+              const SizedBox(height: 8),
+              _buildCompetitorQuoteCard('STRAVA', '“Because apparently your morning run needs a leaderboard.”', Colors.orangeAccent),
+              const SizedBox(height: 8),
+              _buildCompetitorQuoteCard('HEVY', '“Log the workout, admire the numbers, repeat the same grind.”', Colors.lightBlueAccent),
+              const SizedBox(height: 18),
+
+              // Section 3: The Solution (Slides 3 & 4)
+              _buildManifestoSectionHeader('THE RIVALS SOLUTION (USP)', Icons.verified_rounded, RivalsTheme.neonLime),
+              const SizedBox(height: 10),
+              _buildManifestoCard(
+                title: 'We Turn Fitness Into a Verified Social Competition',
+                body: '1. Real-Time Fitness Competition: Compete head-to-head live.\n'
+                    '2. AI-Verified Performance: Computer vision (Google ML Kit BlazePose) tracks biomechanics with zero cheating.\n'
+                    '3. Fitness As a Game: Mountain ascent, bot races, and Flappy Push-Up arcade.\n'
+                    '4. Connect the Digital & Physical Fitness World: Bridge home workouts, gym communities, trainers, and friends.',
+              ),
+              const SizedBox(height: 18),
+
+              // Section 4: Value Proposition Matrix (Slide 5)
+              _buildManifestoSectionHeader('STAKEHOLDER VALUE ECOSYSTEM', Icons.groups_rounded, Colors.cyanAccent),
+              const SizedBox(height: 10),
+              _buildStakeholderRow('Users / Athletes', 'Motivation, competition, recognition, measurable verified improvement.'),
+              _buildStakeholderRow('Friends', 'Grind Together: A way to challenge, race, and compete with each other.'),
+              _buildStakeholderRow('Gyms', 'Community engagement, customer acquisition, visibility, and member retention.'),
+              _buildStakeholderRow('Creators & Trainers', 'Audience, credibility, and competitive verified AI challenges.'),
+              _buildStakeholderRow('Brands', 'Access to an active, fitness-focused, anti-cheat verified community.'),
+              const SizedBox(height: 18),
+
+              // Section 5: Market Opportunity (Slide 6)
+              _buildManifestoSectionHeader('MARKET OPPORTUNITIES', Icons.trending_up_rounded, RivalsTheme.neonLime),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: RivalsTheme.surfaceElevated,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: RivalsTheme.borderLight),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _MarketStatWidget('TAM', '₹20–30 Cr', 'Total Market'),
+                    _MarketStatWidget('SAM', '₹5–8 Cr', 'Active Youth'),
+                    _MarketStatWidget('SOM', '₹50L–1.5 Cr', 'Years 2–3'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildManifestoSectionHeader(String title, IconData icon, Color color) {
+    return Row(
+      children: [
+        Icon(icon, color: color, size: 16),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.8,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildManifestoCard({required String title, required String body}) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: RivalsTheme.surfaceElevated,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: RivalsTheme.borderLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            body,
+            style: const TextStyle(color: Colors.white70, fontSize: 12.5, height: 1.45),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompetitorQuoteCard(String name, String quote, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF141914),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              name,
+              style: TextStyle(color: color, fontSize: 10.5, fontWeight: FontWeight.w900),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              quote,
+              style: const TextStyle(color: Colors.white70, fontSize: 11.5, fontStyle: FontStyle.italic, height: 1.3),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStakeholderRow(String role, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: RivalsTheme.surfaceElevated,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              role,
+              style: const TextStyle(color: RivalsTheme.neonLime, fontSize: 12, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                value,
+                style: const TextStyle(color: Colors.white70, fontSize: 11.5, height: 1.3),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-/// Custom Painter for the circular radial fitness gauge
+class _MarketStatWidget extends StatelessWidget {
+  final String label;
+  final String value;
+  final String desc;
+
+  const _MarketStatWidget(this.label, this.value, this.desc);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(color: RivalsTheme.neonLime, fontSize: 11, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 2),
+        Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 2),
+        Text(desc, style: const TextStyle(color: Colors.white54, fontSize: 9)),
+      ],
+    );
+  }
+}
 class _RadialScoreGaugePainter extends CustomPainter {
   final int score;
 

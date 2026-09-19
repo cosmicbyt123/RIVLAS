@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (leave blank to use pubspec version)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -17,6 +22,8 @@ jobs:
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: ☕ Set up Java 17
         uses: actions/setup-java@v4
@@ -33,19 +40,56 @@ jobs:
       - name: 📦 Get dependencies
         run: flutter pub get
 
+      - name: 🔍 Determine Release Version
+        id: version_step
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          elif [ -n "${{ github.event.inputs.tag_name }}" ]; then
+            TAG="${{ github.event.inputs.tag_name }}"
+          else
+            PUBSPEC_VER=$(grep '^version:' pubspec.yaml | sed 's/version: //g' | tr -d '\r' | cut -d'+' -f1)
+            TAG="v${PUBSPEC_VER}"
+          fi
+          echo "RELEASE_TAG=${TAG}" >> $GITHUB_ENV
+          echo "Computed release tag: ${TAG}"
+
       - name: 🔨 Build Release APK
         run: flutter build apk --release
 
-      - name: 🏷️ Rename APK
-        run: cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/RIVALS-${{ github.ref_name }}.apk
+      - name: 🏷️ Prepare APK Assets
+        run: |
+          mkdir -p release_assets
+          cp build/app/outputs/flutter-apk/app-release.apk release_assets/RIVALS-${{ env.RELEASE_TAG }}.apk
+          cp build/app/outputs/flutter-apk/app-release.apk release_assets/RIVALS-latest.apk
+
+      - name: 📤 Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RIVALS-APK-${{ env.RELEASE_TAG }}
+          path: release_assets/
 
       - name: 🚀 Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/app/outputs/flutter-apk/RIVALS-${{ github.ref_name }}.apk
-          name: "RIVALS ${{ github.ref_name }}"
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: "RIVALS ${{ env.RELEASE_TAG }} — The Hub of Fitness"
+          files: release_assets/*.apk
           draft: false
           prerelease: false
           generate_release_notes: true
+          body: |
+            ## ⚡ RIVALS Release ${{ env.RELEASE_TAG }}
+            **Every one day has a day one • Grind Together, Grow Together**
+
+            ### 🚀 What's Inside:
+            - **Verified Social Competition:** Real-time AI computer vision & biomechanics validation.
+            - **Anti-Cheat AI Tracking:** Zero fake streaks, dual-angle tracking (side profile & front floor).
+            - **Multi-Person & Bot Battles:** Side-by-side athlete tracking and AI pacing.
+            - **Fitness Arcade:** Push-Up Flappy Bird & Plank Endurance.
+            - **100% On-Device & Private:** Powered by Google ML Kit BlazePose.
+
+            ### 📦 Download:
+            Download and install `RIVALS-${{ env.RELEASE_TAG }}.apk` below on your Android device.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

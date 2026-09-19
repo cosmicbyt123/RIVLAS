@@ -530,12 +530,14 @@ class _VideoVerificationScreenState extends State<VideoVerificationScreen>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        const Icon(Icons.verified_user_rounded, color: RivalsTheme.neonLime, size: 15),
+                        const SizedBox(width: 6),
                         const Text(
-                          'Valid Reps: ',
+                          'AI-Verified: ',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(

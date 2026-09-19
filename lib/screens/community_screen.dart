@@ -19,7 +19,7 @@ class _CommunityScreenState extends State<CommunityScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -85,8 +85,9 @@ class _CommunityScreenState extends State<CommunityScreen>
                               ),
                               dividerColor: Colors.transparent,
                               tabs: const [
-                                Tab(text: 'Gym Discovery'),
-                                Tab(text: 'Activity Feed'),
+                                Tab(text: 'Gym Hubs'),
+                                Tab(text: 'Feed'),
+                                Tab(text: 'Ecosystem & Brands'),
                               ],
                             ),
                           ),
@@ -164,6 +165,7 @@ class _CommunityScreenState extends State<CommunityScreen>
             children: [
               _buildGymDiscoveryTab(),
               _buildSocialFeedTab(),
+              _buildEcosystemTab(),
             ],
           ),
         ),
@@ -816,6 +818,300 @@ class _CommunityScreenState extends State<CommunityScreen>
       },
     );
   }
+
+  // 3. Pitch Deck Ecosystem & Brands Hub (Slide 5 of Rival.pdf)
+  Widget _buildEcosystemTab() {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
+      physics: const BouncingScrollPhysics(),
+      children: [
+        // Slogan Banner
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                RivalsTheme.neonLime.withValues(alpha: 0.15),
+                const Color(0xFF141914),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: RivalsTheme.neonLime.withValues(alpha: 0.3)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: RivalsTheme.neonLime.withValues(alpha: 0.25),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'THE 5-STAKEHOLDER HUB',
+                      style: TextStyle(
+                        color: RivalsTheme.neonLime,
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.6,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  const Text(
+                    'Rival.pdf Slide 5',
+                    style: TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Connecting Physical Gyms & Digital Rivals',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'A multi-sided fitness ecosystem powering users, friends, gyms, creators, and brands through verified AI performance.',
+                style: TextStyle(color: Colors.white60, fontSize: 12, height: 1.4),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // 1. Gym Partners Section
+        _buildEcosystemSectionHeader('1. GYMS & LOCAL HUBS', 'Customer acquisition, visibility & retention', Icons.fitness_center_rounded, Colors.tealAccent),
+        const SizedBox(height: 10),
+        _buildEcosystemCard(
+          title: 'Iron Peak Crossfit & Calisthenics',
+          tag: 'PARTNER GYM',
+          tagColor: Colors.tealAccent,
+          subtitle: 'Verified members on local gym leaderboard: 142 athletes',
+          bulletPoints: [
+            'Physical-to-digital QR check-in & verified workout rigs',
+            'Monthly gym-versus-gym turf wars',
+            'Members get zero-calibration edge AI tracking',
+          ],
+          actionLabel: 'View Gym Leaderboard',
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Joined Iron Peak Hub leaderboard!')),
+            );
+          },
+        ),
+
+        const SizedBox(height: 20),
+
+        // 2. Creator & Trainer Arenas
+        _buildEcosystemSectionHeader('2. FITNESS CREATORS & COACHES', 'Audience, credibility & verified challenges', Icons.campaign_rounded, Colors.amberAccent),
+        const SizedBox(height: 10),
+        _buildEcosystemCard(
+          title: 'Coach Marcus: 50-Pushup Anti-Cheat Gauntlet',
+          tag: 'VERIFIED CHALLENGE',
+          tagColor: Colors.amberAccent,
+          subtitle: 'Created by certified trainer • 3,240 participants',
+          bulletPoints: [
+            'Zero fake reps: AI verifies 90° elbow depth & straight spine',
+            'Winners earn verified coach badges & nutrition consultations',
+            'No manual logging: Every rep is mathematically confirmed',
+          ],
+          actionLabel: 'Accept Coach Challenge',
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Gauntlet accepted! Launching Camera verification...')),
+            );
+          },
+        ),
+
+        const SizedBox(height: 20),
+
+        // 3. Brands & Sponsors Perks
+        _buildEcosystemSectionHeader('3. BRANDS & SPONSORS', 'Targeted access to active, verified community', Icons.card_giftcard_rounded, RivalsTheme.neonLime),
+        const SizedBox(height: 10),
+        _buildEcosystemCard(
+          title: 'Gymshark x RIVALS Performance Drop',
+          tag: 'VERIFIED REWARD',
+          tagColor: RivalsTheme.neonLime,
+          subtitle: 'Unlock 20% athletic discount + exclusive Shaker',
+          bulletPoints: [
+            'Requirement: Complete 150 AI-verified push-ups or squats',
+            'Anti-cheat protection ensures rewards go only to real athletes',
+            'Track progress live on your Mountain Ascent altitude',
+          ],
+          actionLabel: 'Claim Reward Tier',
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Brand perk progress: 74/150 verified reps completed!')),
+            );
+          },
+        ),
+
+        const SizedBox(height: 20),
+
+        // 4. Friends & Rivals (Grind Together)
+        _buildEcosystemSectionHeader('4. FRIENDS & SOCIAL RIVALS', 'Grind Together • Grow Together', Icons.people_alt_rounded, Colors.cyanAccent),
+        const SizedBox(height: 10),
+        _buildEcosystemCard(
+          title: 'Squad Push-Up Showdown',
+          tag: 'LIVE DUEL',
+          tagColor: Colors.cyanAccent,
+          subtitle: 'Race 2-on-2 against your friends or local rivals',
+          bulletPoints: [
+            'Simultaneous 2-player spatial tracking on one screen',
+            'Haptic feedback alerts you when your rival hits a new rep',
+            'Instant highlight reel & form score comparison',
+          ],
+          actionLabel: 'Invite a Friend',
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Friend duel invite copied to clipboard!')),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEcosystemSectionHeader(String title, String subtitle, IconData icon, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
+          ),
+          child: Icon(icon, color: color, size: 18),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.6,
+                ),
+              ),
+              Text(
+                subtitle,
+                style: const TextStyle(color: Colors.white54, fontSize: 10.5),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEcosystemCard({
+    required String title,
+    required String tag,
+    required Color tagColor,
+    required String subtitle,
+    required List<String> bulletPoints,
+    required String actionLabel,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: RivalsTheme.surfaceElevated,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: RivalsTheme.borderLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: tagColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: tagColor.withValues(alpha: 0.3)),
+                ),
+                child: Text(
+                  tag,
+                  style: TextStyle(
+                    color: tagColor,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            subtitle,
+            style: const TextStyle(color: Colors.white54, fontSize: 11.5),
+          ),
+          const SizedBox(height: 12),
+          ...bulletPoints.map((bp) => Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('• ', style: TextStyle(color: RivalsTheme.neonLime, fontWeight: FontWeight.bold)),
+                    Expanded(
+                      child: Text(
+                        bp,
+                        style: const TextStyle(color: Colors.white70, fontSize: 11.5, height: 1.3),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onTap,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: RivalsTheme.surfaceHighlight,
+                foregroundColor: RivalsTheme.neonLime,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(color: RivalsTheme.neonLime.withValues(alpha: 0.3)),
+                ),
+              ),
+              child: Text(
+                actionLabel,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Custom Painter for stylized dark mode GPS radar map
@@ -904,3 +1200,5 @@ class _StylizedGymMapPainter extends CustomPainter {
     return oldDelegate.selectedGymIndex != selectedGymIndex;
   }
 }
+
+
