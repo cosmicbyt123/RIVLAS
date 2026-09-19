@@ -117,7 +117,7 @@ flowchart TD
     B -->|Accepted Frame| C[Sensor Normalization<br/>Orientation & Selfie Mirroring]
     C --> D[Google ML Kit BlazePose<br/>33 3D Skeletal Landmarks]
     D --> E[Temporal Signal Filter<br/>Exponential Moving Average α = 0.35]
-    E --> F[Biomechanical Engine<br/>Mode A: Dot Product | Mode B: Compression]
+    E --> F["Biomechanical Engine<br/>Mode A: Dot Product / Mode B: Compression"]
     F --> G[Schmitt-Trigger FSM<br/>4-Stage State Machine with Hysteresis]
     G --> H[UI Canvas & Multi-Modal Feedback<br/>CustomPainter Skeleton + Haptic Buzzer]
 ```
